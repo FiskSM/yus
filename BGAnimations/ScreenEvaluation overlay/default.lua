@@ -31,6 +31,12 @@ local frameWidth = 280
 local frameHeight = 20
 local frameX = SCREEN_WIDTH-10
 local frameY = 10
+local verts= {
+	{{-260, 0, 0}, getMainColor('highlight')},
+	{{-270, 20, 0}, getMainColor('highlight')},
+	{{10, 20, 0}, getMainColor('highlight')},
+	{{20, 0, 0}, getMainColor('highlight')},
+}
 
 t[#t+1] = Def.ActorFrame{
 	InitCommand = function(self)
@@ -46,9 +52,10 @@ t[#t+1] = Def.ActorFrame{
 		self:smooth(0.5)
 		self:y(-frameHeight/2)
 	end;
-	Def.Quad{
+	quadMV(verts) .. {
 		InitCommand=function(self)
-			self:halign(1):zoomto(frameWidth,frameHeight):diffuse(getMainColor('highlight')):diffusealpha(0.8)
+			self:xy(-19,-10)
+			self:diffusealpha(0.8)
 		end;
 	};
 	LoadFont("Common Normal") .. {
@@ -67,7 +74,28 @@ t[#t+1] = Def.ActorFrame{
 
 t[#t+1] = LoadActor("../_cursor");
 
+t[#t+1] = quadButton(6)..{
+	InitCommand = function(self)
+		self:xy(SCREEN_WIDTH-10,53)
+		self:zoomto(48, 48)
+		self:diffusealpha(0)
+		self:halign(1)
+	end;
+	TopPressedCommand = function(self)
+		self:diffusealpha(0.2)
+		self:smooth(0.3)
+		self:diffusealpha(0)
+		SaveScreenshot(nil, false, false)
+	end;
+}
 
+t[#t+1] = LoadActor(THEME:GetPathG("", "screenshot")) .. {
+	InitCommand = function(self)
+		self:xy(SCREEN_WIDTH-17,36)
+		self:halign(1):valign(0)
+		self:zoom(0.26)
+	end;
+}
 
 local largeImageText = string.format("%s: %5.2f",profile:GetDisplayName(), profile:GetPlayerRating())
 
@@ -88,6 +116,5 @@ MSDString = MSD > 0 and string.format("(%5.2f)", MSD) or "(Unranked)"
 local state = string.format("%s %s %s",stepsType, difficulty, MSDString)
 
 GAMESTATE:UpdateDiscordPresence(largeImageText, detail, state, 0)
-
 
 return t
