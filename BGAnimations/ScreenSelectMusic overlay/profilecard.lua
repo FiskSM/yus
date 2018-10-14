@@ -253,58 +253,21 @@ local function generalFrame(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="StepsAndMeter";
 		InitCommand = function(self)
-			self:xy(frameWidth/2-5,38)
-			self:zoom(0.5)
+			self:xy(frameWidth/2-5,35)
+			self:zoom(0.65)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
 			if steps[pn] ~= nil then
 
-				local diff = steps[pn]:GetDifficulty()
-				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
+				local meter = steps[pn]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
 					meter = steps[pn]:GetMeter()
 				end
 				meter = math.max(1,meter)
-
-				local difftext
-				if diff == 'Difficulty_Edit' and IsUsingWideScreen() then
-					difftext = steps[pn]:GetDescription()
-					difftext = difftext == '' and getDifficulty(diff) or difftext
-				else
-					difftext = getDifficulty(diff)
-				end
-				if IsUsingWideScreen() then
-					self:settext(stype.." "..difftext.." "..meter)
-				else
-					self:settext(difftext.." "..meter)
-				end
+				self:settextf("Difficulty level: %5.2f", meter)
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
-			end
-		end;
-	};
-
-	t[#t+1] = LoadFont("Common Normal")..{
-		Name="MSDAvailability";
-		InitCommand = function(self)
-			self:xy(frameWidth/2-5,27)
-			self:zoom(0.3)
-			self:halign(1)
-			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
-		end;
-		SetCommand = function(self)
-			if steps[pn] ~= nil then
-
-				local meter = math.floor(steps[pn]:GetMSD(getCurRateValue(),1))
-				if meter == 0 then
-					self:settext("Default")
-					self:diffuse(color(colorConfig:get_data().main.disabled))
-				else
-					self:settext("MSD")
-					self:diffuse(color(colorConfig:get_data().main.enabled))
-				end
 			end
 		end;
 	};
