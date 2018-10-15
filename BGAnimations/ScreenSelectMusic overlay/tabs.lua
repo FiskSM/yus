@@ -67,7 +67,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("../_mouse")
 
-local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads", "Other"})
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
