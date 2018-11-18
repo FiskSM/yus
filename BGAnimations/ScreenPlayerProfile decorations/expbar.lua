@@ -55,15 +55,11 @@ t[#t+1] = LoadFont("Common Normal")..{
 		if DLMAN:IsLoggedIn() then
 			rank = DLMAN:GetSkillsetRank("Overall")
 			rating = DLMAN:GetSkillsetRating("Overall")
-
 			self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
 
-		else		
-			if profile ~= nil then
-				rating = profile:GetPlayerRating()
-				self:settextf("Skill Rating: %0.2f",rating)
-			end
-
+		elseif profile then
+			rating = profile:GetPlayerRating()
+			self:settextf("Skill Rating: %0.2f",rating)
 		end
 
 		self:AddAttribute(#"Skill Rating:", {Length = -1, Zoom =0.3 ,Diffuse = getMSDColor(rating)})

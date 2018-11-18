@@ -168,11 +168,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:xy(245,30)
 		self:zoom(0.4)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		if DLMAN:IsLoggedIn() then
-			self:settext("Logout")
-		else
-			self:settext("Login")
-		end
+		self:settext("Login")
 	end;
 
 	LoginMessageCommand = function(self)
@@ -182,7 +178,6 @@ t[#t+1] = LoadFont("Common Bold")..{
 	LogOutMessageCommand=function(self)
 		self:settext("Login")
 	end,
-
 }
 
 
@@ -190,7 +185,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 t[#t+1] = LoadFont("Common BLarge")..{
 	InitCommand  = function(self)
 		self:xy(100,-25)
-		self:zoom(0.35)
+		self:zoom(0.33)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:queuecommand('Set')
@@ -206,7 +201,7 @@ t[#t+1] = LoadFont("Common BLarge")..{
 				text = pn == PLAYER_1 and "Player 1" or "Player 2"
 			end
 		end
-
+		self:maxwidth(320)
 		self:settext(text)
 	end;
 }
