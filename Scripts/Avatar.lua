@@ -10,7 +10,7 @@ local function addProfileFromGUID(GUID)
 end;
 
 function ProfileManager.GetAvatarFolderPath()
-	return "Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/"
+	return "Assets/Avatars/"
 end
 
 -- returns the image path relative to the theme folder for the specified player.
@@ -42,7 +42,7 @@ end;
 
 function ProfileManager.GetAllAvatarNames()
 	local imgTypes = {".jpg",".png",".gif",".jpeg"}
-	local rawList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/")
+	local rawList = FILEMAN:GetDirListing("Assets/Avatars/")
 	local avatars = filterFileList(rawList,imgTypes)
 
 	return avatars
@@ -50,7 +50,7 @@ end
 
 function ProfileManager.GetAllAvatarPaths()
 	local imgTypes = {".jpg",".png",".gif",".jpeg"}
-	local rawList = FILEMAN:GetDirListing("Themes/"..THEME:GetCurThemeName().."/Graphics/Player avatar/", false, true)
+	local rawList = FILEMAN:GetDirListing("Assets/Avatars/", false, true)
 	local avatars = filterFileList(rawList,imgTypes)
 
 	return avatars
