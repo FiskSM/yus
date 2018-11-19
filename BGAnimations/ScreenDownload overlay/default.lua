@@ -381,17 +381,17 @@ end
 
 
 
-t[#t+1] = packInfo() .. {
+--[[t[#t+1] = packInfo() .. {
 	InitCommand = function(self)
 		self:xy(10,30)
 		self:delayedFadeIn(1)
 	end
-}
+}--]]
 
 t[#t+1] = packList() .. {
 	Name = "PackList";
 	InitCommand = function(self)
-		self:xy(320,30)
+		self:xy(10,30)              --self:xy(320,30)
 		self:delayedFadeIn(2)
 	end
 }
