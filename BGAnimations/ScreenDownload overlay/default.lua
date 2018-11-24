@@ -39,11 +39,11 @@ local function input(event)
 			SCREENMAN:GetTopScreen():Cancel()
 		end
 
-		if event.button == "MenuLeft" then
+		if event.button == "MenuLeft" or event.DeviceInput.button == "DeviceButton_mousewheel up" then
 			movePage(-1)
 		end
 
-		if event.button == "MenuRight" then
+		if event.button == "MenuRight" or event.DeviceInput.button == "DeviceButton_mousewheel down"then
 			movePage(1)
 		end
 
@@ -233,7 +233,17 @@ local function packList()
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.downloading)):diffusealpha(0.2)
 			end;
 			StopDownloadCommand = function(self) -- Stop download
-				download:Stop()
+			--[[
+
+				local packlist = DLMAN:GetPacklist()
+				packlist:SetFromAll()
+				local downloading = DLMAN:GetDownloadingPacks()
+				local packtable = packlist:GetPackTable()
+				download = packtable[packIndex]:DownloadAndInstall()
+
+			--]]
+				local asd = packtable[packIndex]:GetDownload()
+				asd:Stop()
 				downloading = DLMAN:GetDownloadingPacks()
 				self:GetChild("Status"):playcommand("Set")
 				self:GetChild("ProgressBar"):diffuse(color(colorConfig:get_data().downloadStatus.available)):diffusealpha(0.2)
