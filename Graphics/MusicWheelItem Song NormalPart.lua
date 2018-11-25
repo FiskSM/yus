@@ -99,7 +99,6 @@ t[#t+1] = Def.Quad{
 if themeConfig:get_data().global.BannerWheel then
 	t[#t+1] = Def.Banner{
 		InitCommand = function(self)
-			self:fadeleft(1)
 			self:halign(1)
 			self:x(capWideScale(get43size(340),340))
 		 	self:diffusealpha(0.3)
