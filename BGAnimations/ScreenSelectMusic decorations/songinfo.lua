@@ -78,15 +78,20 @@ t[#t+1] = Def.Banner{
 	end;
 	SetCommand = function(self)
 		if topScreen:GetName() == "ScreenSelectMusic" or topScreen:GetName() == "ScreenNetSelectMusic" then
-			if song then
-				self:LoadFromSong(song)
-			elseif group then
-				self:LoadFromSongGroup(group)
-			end
-			self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
+			self:finishtweening():smooth(0.25):sleep(0.2):queuecommand("ModifyBanner")
 		end
 	end;
+	ModifyBannerCommand = function(self)
+		if song then
+			self:LoadFromSong(song)
+		elseif group then
+			self:LoadFromSongGroup(group)
+		end
+		self:scaletoclipped(capWideScale(get43size(384),384),capWideScale(get43size(120),120))
+	end;
 }
+
+
 
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle";
