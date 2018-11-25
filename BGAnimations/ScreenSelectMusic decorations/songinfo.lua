@@ -2,6 +2,8 @@ local topScreen
 local song
 local group
 local wheel
+local steps
+local skillsets = {}
 
 
 local t = Def.ActorFrame{
@@ -23,6 +25,7 @@ local t = Def.ActorFrame{
 	end;
 	SetCommand = function(self)
 		song = GAMESTATE:GetCurrentSong()
+		steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
 		group = wheel:GetSelectedSection()
 		GHETTOGAMESTATE:setLastSelectedFolder(group)
 
@@ -30,6 +33,7 @@ local t = Def.ActorFrame{
 		self:GetChild("CDTitle"):playcommand("Set")
 		self:GetChild("songTitle"):playcommand("Set")
 		self:GetChild("songLength"):playcommand("Set")
+		self:GetChild("skillsets"):playcommand("Set")
 	end;
 	PlayerJoinedMessageCommand = function(self) self:queuecommand("Set") end;
 	CurrentSongChangedMessageCommand = function(self) self:queuecommand("Set") end;
@@ -175,8 +179,6 @@ t[#t+1] = LoadFont("Common Bold") .. {
 	end
 }
 
-
-
 -- Song length
 t[#t+1] = LoadFont("Common Normal") .. {
 	Name="songLength";
@@ -208,18 +210,6 @@ t[#t+1] = Def.Quad{
 		self:valign(1)
 		self:fadetop(1)
 	end;
-	SetCommand = function(self)
-		if getCurRateValue() == 1 then
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0)
-		else
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0.6)
-		end
-	end;
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
 }
 
 -- Rate text
@@ -237,6 +227,31 @@ t[#t+1] = LoadFont("Common Bold") .. {
 			self:settext("")
 		else
 			self:settext(getCurRateDisplayString())
+		end
+	end;
+	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
+}
+
+t[#t+1] = LoadFont("Common Bold") .. {
+	Name="skillsets";
+	InitCommand = function(self)
+		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2+5,110+capWideScale(get43size(60),60))
+		self:halign(0)
+		self:zoom(0.45)
+		self:maxwidth(capWideScale(get43size(340),340)/0.45)
+	end;
+	SetCommand = function(self)
+		if song then
+			skillsets = {steps:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 1), steps:GetRelevantSkillsetsByMSDRank(getCurRateValue(), 2)}
+			if skillsets[1]~="" and skillsets[2]~="" then 
+				self:settext(skillsets[1].." - "..skillsets[2])
+			elseif skillsets[1]~="" then
+				self:settext(skillsets[1])
+			elseif skillsets[2]~="" then
+				self:settext(skillsets[2])
+			end
+		else
+			self:settext("")
 		end
 	end;
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end;
