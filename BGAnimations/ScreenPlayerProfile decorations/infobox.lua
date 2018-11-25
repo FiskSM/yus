@@ -158,6 +158,7 @@ local function scoreListItem(i)
 			self:halign(0)
 			self:diffusealpha(0.2)
 			self:zoomto(scoreItemWidth, scoreItemHeight)
+			self:playcommand("Set")
 		end;
 		TopPressedCommand = function(self)
 			self:finishtweening()
