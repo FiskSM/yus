@@ -253,8 +253,8 @@ local function generalFrame(pn)
 	t[#t+1] = LoadFont("Common Normal")..{
 		Name="StepsAndMeter";
 		InitCommand = function(self)
-			self:xy(frameWidth/2-5,35)
-			self:zoom(0.65)
+			self:xy(frameWidth/2-5,33)
+			self:zoom(0.55)
 			self:halign(1)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
@@ -331,7 +331,7 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self) 
 			self:stoptweening()
-			self:decelerate(0.5)
+			self:decelerate(0.5):visible(true)
 			local meter = 0
 			local enabled = GAMESTATE:IsPlayerEnabled(pn)
 			if enabled and steps[pn] ~= nil then
@@ -343,7 +343,7 @@ local function generalFrame(pn)
 				self:settext(math.floor(meter))
 				self:x((math.min(1,meter/maxMeter))*(frameWidth-10)-frameWidth/2-3)
 			else
-				self:settext(0)
+				self:visible(false)
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;

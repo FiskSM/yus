@@ -84,7 +84,7 @@ t[#t+1] = Def.Quad{
 }
 
 
-t[#t+1] = Def.Quad{
+--[[t[#t+1] = Def.Quad{
 	InitCommand= function(self) 
 		self:x(30)
 		self:zoomto(2,32)
@@ -94,12 +94,12 @@ t[#t+1] = Def.Quad{
 
 	BeginCommand = function(self) self:queuecommand('Set') end;
 	OffCommand = function(self) self:visible(false) end;
-}
+}--]]
 
 if themeConfig:get_data().global.BannerWheel then
 	t[#t+1] = Def.Banner{
 		InitCommand = function(self)
-			self:fadeleft(1)
+			self:fadeleft(0.7)
 			self:halign(1)
 			self:x(capWideScale(get43size(340),340))
 		 	self:diffusealpha(0.9)
