@@ -20,46 +20,36 @@ local course
 
 local steps = {
 	PlayerNumber_P1,
-	PlayerNumber_P2
 }
 
 local trail = {
 	PlayerNumber_P1,
-	PlayerNumber_P2
 }
 
 local profile = {
 	PlayerNumber_P1,
-	PlayerNumber_P2
 }
 
 local topScore = {
 	PlayerNumber_P1,
-	PlayerNumber_P2
 }
 
 local hsTable = {
 	PlayerNumber_P1,
-	PlayerNumber_P2
 }
 
-local function generalFrame(pn)
+local function generalFrame()
 	local t = Def.ActorFrame{
 		SetCommand = function(self)
 			self:xy(frameX,frameY)
-			if GAMESTATE:GetNumPlayersEnabled() == 2 and pn == PLAYER_2 then
-				self:x(SCREEN_WIDTH-frameX)
-			end
-			self:visible(GAMESTATE:IsPlayerEnabled(pn))
+			self:visible(GAMESTATE:IsPlayerEnabled(PLAYER_1))
 		end;
 
 		UpdateInfoCommand = function(self)
 			song = GAMESTATE:GetCurrentSong()
-			for _,pn in pairs(GAMESTATE:GetEnabledPlayers()) do
-				profile[pn] = GetPlayerOrMachineProfile(pn)
-				steps[pn] = GAMESTATE:GetCurrentSteps(pn)
-				topScore[pn] = getBestScore(pn, 0, getCurRate())
-			end
+				profile[PLAYER_1] = GetPlayerOrMachineProfile(PLAYER_1)
+				steps[PLAYER_1] = GAMESTATE:GetCurrentSteps(PLAYER_1)
+				topScore[PLAYER_1] = getBestScore(PLAYER_1, 0, getCurRate())
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end;
 
@@ -119,7 +109,7 @@ local function generalFrame(pn)
 		AvatarChangedMessageCommand = function(self) self:queuecommand('ModifyAvatar') end;
 		ModifyAvatarCommand = function(self)
 			self:visible(true)
-			self:LoadBackground(PROFILEMAN:GetAvatarPath(pn));
+			self:LoadBackground(PROFILEMAN:GetAvatarPath(PLAYER_1));
 			self:zoomto(50,50)
 		end;
 	}
@@ -134,10 +124,10 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self)
 			local text = ""
-			if profile[pn] ~= nil then
-				text = getCurrentUsername(pn)
+			if profile[PLAYER_1] ~= nil then
+				text = getCurrentUsername(PLAYER_1)
 				if text == "" then
-					text = pn == PLAYER_1 and "Player 1" or "Player 2"
+					text = PLAYER_1 == PLAYER_1 and "Player 1" or "Player 2"
 				end
 			end
 			self:settext(text)
@@ -166,8 +156,8 @@ local function generalFrame(pn)
 				self:settextf("Skill Rating: %0.2f (#%d)", rating, rank)
 
 			else		
-				if profile[pn] ~= nil then
-					rating = profile[pn]:GetPlayerRating()
+				if profile[PLAYER_1] ~= nil then
+					rating = profile[PLAYER_1]:GetPlayerRating()
 					self:settextf("Skill Rating: %0.2f",rating)
 				end
 
@@ -191,10 +181,10 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText)):diffusealpha(0.5)
 		end;
 		SetCommand = function(self)
-			if getScoreDate(topScore[pn]) == "" then
+			if getScoreDate(topScore[PLAYER_1]) == "" then
 				self:settext("Date Achieved: 0000-00-00 00:00:00")
 			else
-				self:settext("Date Achieved: "..getScoreDate(topScore[pn]))
+				self:settext("Date Achieved: "..getScoreDate(topScore[PLAYER_1]))
 			end
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
@@ -215,32 +205,32 @@ local function generalFrame(pn)
 
 			if GAMESTATE:IsCourseMode() then
 				if course:AllSongsAreFixed() then
-					if trail[pn] ~= nil then
-						notes = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-						holds = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-						rolls = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-						mines = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-						lifts = trail[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-						diff = trail[pn]:GetDifficulty()
+					if trail[PLAYER_1] ~= nil then
+						notes = trail[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
+						holds = trail[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
+						rolls = trail[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Rolls")
+						mines = trail[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
+						lifts = trail[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Lifts")
+						diff = trail[PLAYER_1]:GetDifficulty()
 					end
 
-					stype = ToEnumShortString(trail[pn]:GetStepsType()):gsub("%_"," ")
+					stype = ToEnumShortString(trail[PLAYER_1]:GetStepsType()):gsub("%_"," ")
 					self:settextf("%s %s // Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",stype,diff,notes,holds,rolls,mines,lifts);
 				else
 					self:settextf("Disabled for courses containing random songs.")
 				end
 			else
-				if steps[pn] ~= nil then
-					notes = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Notes")
-					holds = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Holds")
-					rolls = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Rolls")
-					mines = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Mines")
-					lifts = steps[pn]:GetRadarValues(pn):GetValue("RadarCategory_Lifts")
-					diff = steps[pn]:GetDifficulty()
+				if steps[PLAYER_1] ~= nil then
+					notes = steps[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Notes")
+					holds = steps[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Holds")
+					rolls = steps[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Rolls")
+					mines = steps[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Mines")
+					lifts = steps[PLAYER_1]:GetRadarValues(PLAYER_1):GetValue("RadarCategory_Lifts")
+					diff = steps[PLAYER_1]:GetDifficulty()
 
 				
 
-					stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
+					stype = ToEnumShortString(steps[PLAYER_1]:GetStepsType()):gsub("%_"," ")
 					self:settextf("Notes:%s // Holds:%s // Rolls:%s // Mines:%s // Lifts:%s",notes,holds,rolls,mines,lifts);
 				else
 					self:settext("Disabled");
@@ -259,15 +249,15 @@ local function generalFrame(pn)
 			self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			if steps[pn] ~= nil then
+			if steps[PLAYER_1] ~= nil then
 
-				local meter = steps[pn]:GetMSD(getCurRateValue(),1)
+				local meter = steps[PLAYER_1]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
-					meter = steps[pn]:GetMeter()
+					meter = steps[PLAYER_1]:GetMeter()
 				end
 				meter = math.max(1,meter)
 				self:settextf("Difficulty level: %5.2f", meter)
-				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[PLAYER_1]:GetStepsType(),steps[PLAYER_1]:GetDifficulty())))
 			end
 		end;
 	};
@@ -290,10 +280,10 @@ local function generalFrame(pn)
 			self:settext(maxMeter)
 		end;
 		SetCommand = function(self)
-			if steps[pn] ~= nil then
-				local diff = getDifficulty(steps[pn]:GetDifficulty())
-				local stype = ToEnumShortString(steps[pn]:GetStepsType()):gsub("%_"," ")
-				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+			if steps[PLAYER_1] ~= nil then
+				local diff = getDifficulty(steps[PLAYER_1]:GetDifficulty())
+				local stype = ToEnumShortString(steps[PLAYER_1]:GetStepsType()):gsub("%_"," ")
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[PLAYER_1]:GetStepsType(),steps[PLAYER_1]:GetDifficulty())))
 			end
 		end;
 	};
@@ -309,14 +299,14 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
-			if enabled and steps[pn] ~= nil then
-				meter = steps[pn]:GetMSD(getCurRateValue(),1)
+			local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1)
+			if enabled and steps[PLAYER_1] ~= nil then
+				meter = steps[PLAYER_1]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
-					meter = steps[pn]:GetMeter()
+					meter = steps[PLAYER_1]:GetMeter()
 				end
 				self:zoomx((math.min(1,meter/maxMeter))*(frameWidth-10))
-				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[pn]:GetStepsType(),steps[pn]:GetDifficulty())))
+				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps[PLAYER_1]:GetStepsType(),steps[PLAYER_1]:GetDifficulty())))
 			else
 				self:zoomx(0)
 			end
@@ -333,11 +323,11 @@ local function generalFrame(pn)
 			self:stoptweening()
 			self:decelerate(0.5):visible(true)
 			local meter = 0
-			local enabled = GAMESTATE:IsPlayerEnabled(pn)
-			if enabled and steps[pn] ~= nil then
-				meter = steps[pn]:GetMSD(getCurRateValue(),1)
+			local enabled = GAMESTATE:IsPlayerEnabled(PLAYER_1)
+			if enabled and steps[PLAYER_1] ~= nil then
+				meter = steps[PLAYER_1]:GetMSD(getCurRateValue(),1)
 				if meter == 0 then
-					meter = steps[pn]:GetMeter()
+					meter = steps[PLAYER_1]:GetMeter()
 				end
 				meter = math.max(1,meter)
 				self:settext(math.floor(meter))
@@ -358,8 +348,8 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self)
 			local grade = 'Grade_None'
-			if topScore[pn] ~= nil then
-				grade = topScore[pn]:GetWifeGrade()
+			if topScore[PLAYER_1] ~= nil then
+				grade = topScore[PLAYER_1]:GetWifeGrade()
 			end
 			self:settext(THEME:GetString("Grade",ToEnumShortString(grade)))
 			self:diffuse(getGradeColor(grade))
@@ -379,9 +369,9 @@ local function generalFrame(pn)
 
 			local scoreList
 			local clearType
-			if profile[pn] ~= nil and song ~= nil and steps[pn] ~= nil then
-				scoreList = getScoreTable(pn, getCurRate())
-				clearType = getHighestClearType(pn,steps[pn],scoreList,0)
+			if profile[PLAYER_1] ~= nil and song ~= nil and steps[PLAYER_1] ~= nil then
+				scoreList = getScoreTable(PLAYER_1, getCurRate())
+				clearType = getHighestClearType(PLAYER_1,steps[PLAYER_1],scoreList,0)
 				self:settext(getClearTypeText(clearType))
 				self:diffuse(getClearTypeColor(clearType))
 			end
@@ -398,8 +388,8 @@ local function generalFrame(pn)
 		end;
 		SetCommand = function(self)
 			local scorevalue = 0
-			if topScore[pn] ~= nil then
-				scorevalue = getScore(topScore[pn], steps[pn], true)
+			if topScore[PLAYER_1] ~= nil then
+				scorevalue = getScore(topScore[PLAYER_1], steps[PLAYER_1], true)
 			end
 			self:settextf("%.2f%%",math.floor((scorevalue)*10000)/100)
 		end;
@@ -416,7 +406,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self) 
-			self:settext(getMaxScore(pn,0))
+			self:settext(getMaxScore(PLAYER_1,0))
 		end;
 		BeginCommand = function(self) self:queuecommand('Set') end;
 	}
@@ -431,8 +421,8 @@ local function generalFrame(pn)
 			self:x(self:GetParent():GetChild("score"):GetX()-(math.min(self:GetParent():GetChild("score"):GetWidth(),27/0.5)*0.5))
 
 			local scoreValue = 0
-			if topScore[pn] ~= nil then
-				scoreValue = getScore(topScore[pn], steps[pn], false)
+			if topScore[PLAYER_1] ~= nil then
+				scoreValue = getScore(topScore[PLAYER_1], steps[PLAYER_1], false)
 			end
 			self:settextf("%.0f/",scoreValue)
 		end;
@@ -461,7 +451,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local score = getBestMaxCombo(pn,0, getCurRate())
+			local score = getBestMaxCombo(PLAYER_1,0, getCurRate())
 			local maxCombo = 0
 			maxCombo = getScoreMaxCombo(score)
 			self:settextf("Max Combo: %d",maxCombo)
@@ -479,7 +469,7 @@ local function generalFrame(pn)
 		    self:diffuse(color(colorConfig:get_data().selectMusic.ProfileCardText))
 		end;
 		SetCommand = function(self)
-			local score = getBestMissCount(pn, 0, getCurRate())
+			local score = getBestMissCount(PLAYER_1, 0, getCurRate())
 			if score ~= nil then
 				self:settext("Miss Count: "..getScoreMissCount(score))
 			else
@@ -507,9 +497,7 @@ local function generalFrame(pn)
 	return t
 end
 
-t[#t+1] = generalFrame(PLAYER_1)
-t[#t+1] = generalFrame(PLAYER_2)
-
+t[#t+1] = generalFrame()
 
 
 return t
