@@ -137,7 +137,7 @@ t[#t+1] = quadButton(3)..{
 			DLMAN:Logout()
 		else			
 			playerConfig:get_data(pn_to_profile_slot(pn)).Username = ""
-			playerConfig:get_data(pn_to_profile_slot(pn)).Password = ""
+			playerConfig:get_data(pn_to_profile_slot(pn)).Token = ""
 			playerConfig:set_dirty(pn_to_profile_slot(pn))
 			playerConfig:save(pn_to_profile_slot(pn))
 			DLMAN:Logout()
@@ -202,7 +202,7 @@ t[#t+1] = LoadFont("Common BLarge")..{
 		if profile ~= nil then
 			text = getCurrentUsername(pn)
 			if text == "" then
-				text = pn == PLAYER_1 and "Player 1" or "Player 2"
+				text = "Player"
 			end
 		end
 		self:maxwidth(320)
