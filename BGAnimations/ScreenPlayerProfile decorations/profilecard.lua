@@ -168,7 +168,9 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:xy(245,30)
 		self:zoom(0.4)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		if not DLMAN:IsLoggedIn() then
+		if DLMAN:IsLoggedIn() then
+			self:settext("Logout")
+		else 
 			self:settext("Login")
 		end
 	end;

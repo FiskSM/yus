@@ -17,6 +17,8 @@ local scoreSSRItemYSpacing = 5
 local scoreSSRItemWidth = 80
 local scoreSSRItemHeight = 35
 
+local online = false
+
 local SkillSets = {
 	"Overall",
 	"Stream", 
@@ -47,16 +49,70 @@ t[#t+1] = LoadFont("Common Bold")..{
 	end;
 }
 
+t[#t+1] = quadButton(3)..{
+	InitCommand = function (self)
+		self:xy(30,30)
+		self:zoomto(40,20)
+		self:diffuse(color(colorConfig:get_data().main.enabled)):diffusealpha(0.8)
+	end;
+	TopPressedCommand = function(self)
+		self:finishtweening()
+		self:diffusealpha(0.4)
+		self:smooth(0.3)
+		self:diffusealpha(0.8)
+		online = DLMAN:IsLoggedIn()
+		MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[1], index = 1})
+	end;
+}
+
+t[#t+1] = LoadFont("Common Bold")..{
+	InitCommand  = function(self)
+		self:xy(30,30)
+		self:zoom(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Online")
+	end;
+}
+
+t[#t+1] = quadButton(3)..{
+	InitCommand = function (self)
+		self:xy(80,30)
+		self:zoomto(40,20)
+		self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
+	end;
+	TopPressedCommand = function(self)
+		self:finishtweening()
+		self:diffusealpha(0.4)
+		self:smooth(0.3)
+		self:diffusealpha(0.8)
+		online = false
+		MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[1], index = 1})
+	end;
+}
+
+t[#t+1] = LoadFont("Common Bold")..{
+	InitCommand  = function(self)
+		self:xy(80,30)
+		self:zoom(0.4)
+		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+		self:settext("Local")
+	end;
+}
+
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand  = function(self)
 		self:xy(5, 50)
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:settextf("Sorted by: %s",SkillSets[1])
+		self:settextf("Sorted by: %s - Local scores",SkillSets[1])
 	end;
 	UpdateRankingMessageCommand = function(self, params)
-		self:settextf("Sorted by: %s",params.SSRType)
+		if online then
+			self:settextf("Sorted by: %s - Online scores",params.SSRType)
+		else
+			self:settextf("Sorted by: %s - Local scores",params.SSRType)
+		end
 	end;
 	DisplaySongMessageCommand = function(self, params)
 		self:visible(false)
@@ -95,7 +151,7 @@ local function scoreSSRTypes(i)
 			self:diffusealpha(0.4)
 			self:smooth(0.3)
 			self:diffusealpha(0.2)
-			MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[i]})
+			MESSAGEMAN:Broadcast("UpdateRanking",{SSRType = SkillSets[i], index = i})
 		end;
 	}
 
@@ -139,11 +195,14 @@ local function scoreListItem(i)
 		end;
 		UpdateRankingMessageCommand = function(self, params)
 			SCOREMAN:SortSSRs(params.SSRType)
+			if online then
+				onlineScore = DLMAN:GetTopSkillsetScore(i, SkillSets[params.index])
+			end
 			skillset = params.SSRType
 			ths = SCOREMAN:GetTopSSRHighScore(i, params.SSRType)
 			chartKey = ths:GetChartKey()
 			song = SONGMAN:GetSongByChartKey(chartKey)
-			steps = SONGMAN:GetStepsByChartKey(chartKey)
+			steps = SONGMAN:GetStepsByChartKey(chartKey) 
 			self:playcommand("Tween")
 			self:RunCommandsOnChildren(function(self) self:playcommand("Set") end)
 		end;
@@ -189,7 +248,11 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end;
 		SetCommand = function(self)
-			self:diffuse(color(colorConfig:get_data().difficulty[steps:GetDifficulty()]))
+			if online then
+				self:diffuse(color(colorConfig:get_data().main.highlight))
+			else
+				self:diffuse(color(colorConfig:get_data().difficulty[steps:GetDifficulty()]))
+			end
 		end;
 	}
 
@@ -202,8 +265,13 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end;
 		SetCommand = function(self)
-			local rating = ths:GetSkillsetSSR(skillset)
-			self:settextf("%0.2f", rating)
+			local rating
+			if online then
+				rating = onlineScore.ssr
+			else
+				rating = ths:GetSkillsetSSR(skillset)
+			end
+			self:settextf("%5.2f", rating)
 			self:diffuse(getMSDColor(rating))
 		end;
 	}
@@ -213,11 +281,16 @@ local function scoreListItem(i)
 			self:xy(35,-6)
 			self:halign(0)
 			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:maxwidth(600)
 			self:zoom(0.4)
 			self:playcommand("Set")
 		end;
 		SetCommand = function(self)
-			self:settextf("%s (x%0.2f)",song:GetMainTitle(),ths:GetMusicRate())
+			if online then
+				self:settextf("%s - %0.2f%%",onlineScore.songName,onlineScore.wife * 100)
+			else
+				self:settextf("%s (x%0.2f)",song:GetMainTitle(),ths:GetMusicRate())
+			end
 		end
 	}
 
@@ -230,7 +303,28 @@ local function scoreListItem(i)
 			self:playcommand("Set")
 		end;
 		SetCommand = function(self)
-			self:settextf("// %s",song:GetDisplayArtist())
+			if not online then 
+				self:settextf("// %s",song:GetDisplayArtist())
+			else
+				self:settext("")
+			end
+		end
+	}
+
+	t[#t+1] = LoadFont("Common Normal")..{
+		InitCommand  = function(self)
+			self:xy(35,5)
+			self:halign(0)
+			self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
+			self:zoom(0.3)
+			self:playcommand("Set")
+		end;
+		SetCommand = function(self)
+			if online then 
+				self:settextf("%.2fx",onlineScore.rate)
+			else
+				self:settext("")
+			end
 		end
 	}
 
@@ -293,8 +387,10 @@ local function songDisplay()
 			self:diffusealpha(0.4)
 			self:smooth(0.5)
 			self:diffusealpha(0.2)
-			SCREENMAN:GetTopScreen():Cancel()
-			MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
+			if not online then
+				SCREENMAN:GetTopScreen():Cancel()
+				MESSAGEMAN:Broadcast("MoveMusicWheelToSong",{song = song})
+			end
 		end;
 		SetCommand = function(self)
 		end;
