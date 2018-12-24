@@ -1,7 +1,6 @@
 local top
 
-local packlist = DLMAN:GetPacklist()
-packlist:SetFromAll()
+local packlist = PackList:new()
 local downloading = DLMAN:GetDownloadingPacks()
 local packtable = packlist:GetPackTable()
 
