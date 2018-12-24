@@ -1,10 +1,10 @@
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = GetPlayerOrMachineProfile(pn)
 
-local user = playerConfig:get_data(pn_to_profile_slot(pn)).Username
-local pass = playerConfig:get_data(pn_to_profile_slot(pn)).Password
 if playerConfig:get_data(pn_to_profile_slot(pn)).SavePass then
-	DLMAN:Login(user, pass)
+local user = playerConfig:get_data(pn_to_profile_slot(pn)).Username
+local Token = playerConfig:get_data(pn_to_profile_slot(pn)).Token
+	DLMAN:LoginWithToken(user, Token)
 end
 
 

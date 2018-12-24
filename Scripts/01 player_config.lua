@@ -21,7 +21,7 @@ local defaultConfig = {
 	FCEffect = true,
 	ReceptorSize = 100,
 	Username = "",
-	Password = "",
+	Token = "",
 	SavePass = false,
 	CBHighlightMinJudge = "TapNoteScore_W4"
 }

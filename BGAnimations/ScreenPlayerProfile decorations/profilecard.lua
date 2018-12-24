@@ -58,7 +58,7 @@ t[#t+1] = quadButton(1)..{
 			playerConfig:get_data(pn_to_profile_slot(pn)).SavePass = not playerConfig:get_data(pn_to_profile_slot(pn)).SavePass
 			if playerConfig:get_data(pn_to_profile_slot(pn)).SavePass == false then
 				playerConfig:get_data(pn_to_profile_slot(pn)).Username = ""
-				playerConfig:get_data(pn_to_profile_slot(pn)).Password = ""
+				playerConfig:get_data(pn_to_profile_slot(pn)).Token = ""
 				playerConfig:set_dirty(pn_to_profile_slot(pn))
 				playerConfig:save(pn_to_profile_slot(pn))
 			end
@@ -95,7 +95,7 @@ t[#t+1] = quadButton(3)..{
 	StartLoginCommand = function(self)
 		if playerConfig:get_data(pn_to_profile_slot(pn)).SavePass == false or 
 		playerConfig:get_data(pn_to_profile_slot(pn)).Username == "" or
-		playerConfig:get_data(pn_to_profile_slot(pn)).Password == "" then
+		playerConfig:get_data(pn_to_profile_slot(pn)).Token == "" then
 
 			local username = function(answer) user = answer end
 			local password = function(answer) 
@@ -107,8 +107,8 @@ t[#t+1] = quadButton(3)..{
 			easyInputStringWithFunction("Username:",50, false, username)
 		else
 			local user = playerConfig:get_data(pn_to_profile_slot(pn)).Username
-			local pass = playerConfig:get_data(pn_to_profile_slot(pn)).Password
-			DLMAN:Login(user, pass)
+			local Token = playerConfig:get_data(pn_to_profile_slot(pn)).Token
+			DLMAN:LoginWithToken(user, Token)
 		end
 	end;
 
@@ -116,7 +116,7 @@ t[#t+1] = quadButton(3)..{
 	LoginMessageCommand = function(self)
 		self:diffuse(color(colorConfig:get_data().main.negative)):diffusealpha(0.8)
 		playerConfig:get_data(pn_to_profile_slot(pn)).Username = user
-		playerConfig:get_data(pn_to_profile_slot(pn)).Password = pass
+		playerConfig:get_data(pn_to_profile_slot(pn)).Token = DLMAN:GetToken()
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		SCREENMAN:SystemMessage("Login Successful!")
@@ -125,7 +125,7 @@ t[#t+1] = quadButton(3)..{
 	-- Do nothing on failed login
 	LoginFailedMessageCommand = function(self)
 		playerConfig:get_data(pn_to_profile_slot(pn)).Username = ""
-		playerConfig:get_data(pn_to_profile_slot(pn)).Password = ""
+		playerConfig:get_data(pn_to_profile_slot(pn)).Token = ""
 		playerConfig:set_dirty(pn_to_profile_slot(pn))
 		playerConfig:save(pn_to_profile_slot(pn))
 		SCREENMAN:SystemMessage("Login Failed!")
