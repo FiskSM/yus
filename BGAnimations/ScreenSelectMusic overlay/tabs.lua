@@ -67,7 +67,7 @@ local t = Def.ActorFrame{
 
 t[#t+1] = LoadActor("../_mouse")
 
-local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads"})
+local tab = TAB:new({"Profile", "Song Info", "Group Info", "Playlist", "Downloads", "Player options"})
 t[#t+1] = tab:makeTabActors() .. {
 	OnCommand = function(self)
 		self:y(SCREEN_HEIGHT+tab.height/2)
@@ -96,6 +96,8 @@ t[#t+1] = tab:makeTabActors() .. {
 		elseif params.name == "Playlist" then
 			SCREENMAN:AddNewScreenToTop("ScreenPlaylistInfo")
 
+		elseif params.name == "Player options" then
+			SCREENMAN:GetTopScreen():OpenOptions()
 		end
 	end
 }
