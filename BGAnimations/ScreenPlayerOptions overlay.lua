@@ -1,5 +1,4 @@
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("_mouse")
 
 local topFrameHeight = 35
 local bottomFrameHeight = 54
@@ -165,4 +164,5 @@ t[#t+1] = Def.ActorFrame{
 }
 
 t[#t+1] = LoadActor("_frame")
+t[#t+1] = LoadActor("_mouse")
 return t
